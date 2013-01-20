@@ -1,16 +1,17 @@
 var initreq = require('./initreq.njs');
 var fs 		= require('fs');
+var url = require('url');
 
 function page(req, res, pre, cb) {
 	res.writeHead(400, '404 Not Found', {'Content-Type': 'text/html'});
 	var ps = pre._REQUEST['site'];
-	var site = ps != '' ? ps : req;
+	var site = (ps != undefined) ? ps : url.parse(req.url).pathname;
 
 	res.write('<html><head></head><body>\n');
 
 	fs.readFile('header.html', 'ascii', function(err, header) {
 		res.write(header);
-		res.write('The page could not be found  echo '+site+'.\n');
+		res.write('The page could not be found '+site+'.\n');
 		fs.readFile('footer.html', 'ascii', function(err, footer) {
 			res.write(footer);
 			res.end('</body></html>\n');
